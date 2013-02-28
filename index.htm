@@ -1,0 +1,56 @@
+<body>
+<script src="jquery-1.9.1.min.js"></script>
+<script type="text/javascript">
+var O = {
+	totalBtc: 0,
+	totalMoney: 0,
+	o: function(e){
+		return document.getElementById(e);
+	},
+	render:function(e){
+		document.body.appendChild(e);
+	},
+	init:function(){
+		var ta = document.createElement('TEXTAREA');
+		ta.rows = 5;ta.cols = 50;
+		ta.id = 'txtAdrs';
+		ta.placeholder = 'Separate address with , or new line..';
+		this.render(ta);
+
+		this.render(document.createElement('BR'));
+		var b = document.createElement('BUTTON');
+		b.id = 'btnCount';b.innerHTML = 'Count My Coins';
+		this.render(b);
+
+		$('#btnCount').click(this.countCoins);
+	},
+	countCoins:function()
+	{
+		var as = O.o('txtAdrs').value.split('\n');
+		as.concat(O.o('txtAdrs').value.split(','));
+
+		var bchainaddress = 'https://blockchain.info/address/_address_?format=json&callback=xs';
+		for(var i in as)
+		{
+			var adrs = bchainaddress.replace('_address_', as[i]);
+			$.ajax({
+				type: "GET",
+				url: adrs,
+				dataType: "jsonp",
+				cache: false,
+				crossDomain: true,
+				processData: false,
+				success: onRequestSuccess,
+				error: function (XMLHttpRequest, textStatus, errorThrown) {
+					alert("error");
+				}
+           });
+		}
+	},
+	onRequestSuccess:function(oResult){
+		var a;
+	},
+
+};$(document).ready(function(){O.init()});
+</script>
+</body>
